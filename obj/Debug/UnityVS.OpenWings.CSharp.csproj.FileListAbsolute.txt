@@ -1,0 +1,9 @@
+E:\人竭地零\风之雾开\UnityProjects\OpenWings\obj\Debug\UnityVS.OpenWings.CSharp.csprojResolveAssemblyReference.cache
+E:\人竭地零\风之雾开\UnityProjects\OpenWings\Temp\UnityVS_bin\Debug\Assembly-CSharp.dll
+E:\人竭地零\风之雾开\UnityProjects\OpenWings\Temp\UnityVS_bin\Debug\Assembly-CSharp.pdb
+E:\人竭地零\风之雾开\UnityProjects\OpenWings\Temp\UnityVS_bin\Debug\UnityEditor.dll
+E:\人竭地零\风之雾开\UnityProjects\OpenWings\Temp\UnityVS_bin\Debug\UnityEngine.dll
+E:\人竭地零\风之雾开\UnityProjects\OpenWings\Temp\UnityVS_bin\Debug\UnityEngine.xml
+E:\人竭地零\风之雾开\UnityProjects\OpenWings\Temp\UnityVS_bin\Debug\UnityEditor.xml
+E:\人竭地零\风之雾开\UnityProjects\OpenWings\obj\Debug\Assembly-CSharp.dll
+E:\人竭地零\风之雾开\UnityProjects\OpenWings\obj\Debug\Assembly-CSharp.pdb
