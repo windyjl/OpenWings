@@ -205,7 +205,7 @@ public class GameData:MonoBehaviour{
     }
     public float GetMaxSpeed()		// 速度上限
     {
-        return LvMaxSpeed;
+        return LvMaxSpeed*50 + 100;
     }
     public float GetResistance()	// 阻力
     {

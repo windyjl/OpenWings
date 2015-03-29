@@ -6,6 +6,7 @@ public class GamesceneUI : MonoBehaviour
     private Main refMain;               // 主逻辑对象引用
     private float SpeedX = 200;
     private float SpeedY = 2000;
+    private int KillEnemyCount = 0;
 	// Use this for initialization
     void Start()
     {
@@ -13,6 +14,10 @@ public class GamesceneUI : MonoBehaviour
         refMain = GameObject.Find("scriptMain").GetComponent<Main>();
         SpeedX = GameData.Instance.GetSpeed();
         SpeedY = GameData.Instance.GetHeight();
+
+
+        // 托管剑给剑回调方法
+        GameObject.Find("avatar").GetComponent<Player>().DarkRepulser.killEnemyDele = OnKillEnemy;
 	}
 	
 	// Update is called once per frame
@@ -63,6 +68,7 @@ public class GamesceneUI : MonoBehaviour
         Vector3 pos = refMain.player.transform.position;
         GUILayout.Label("*按空格起飞");
         GUILayout.Label("角色逻辑坐标 (" + pos.x.ToString("f2") + "," + pos.y.ToString("f2") + ")");
+        GUILayout.Label("击杀数(空格挥剑):" + KillEnemyCount + "");
         //pos = GameObject.Find("di").transform.position;
         //GUILayout.Label("参照物坐标 (" + pos.x.ToString("f2") + "," + pos.y.ToString("f2") + ")");
         GUILayout.EndVertical();
@@ -72,5 +78,9 @@ public class GamesceneUI : MonoBehaviour
 //         {
 //             print(spr.sprite.rect.width);
 //         }
+    }
+    void OnKillEnemy()
+    {
+        ++KillEnemyCount;
     }
 }

@@ -11,16 +11,19 @@ public class Player : MonoBehaviour
     public float SpeedX;                    // 横向移动速度
     //public float SpeedY;                    // 纵向移动速度
     private float TargetHeight;             // 目标高度
-    //private bool IsReachHeight;             // 是否达到过目标高度，到达后就开始下落
-    
-    private bool IsHassha = false;          // 是否已发射
-    private bool IsOwari = false;           // 是否已结束
     public float TravelDistace = 0;         // 移动距离
+    //private bool IsReachHeight;             // 是否达到过目标高度，到达后就开始下落
+    //子成员
+    public NiHonMeKen DarkRepulser;         // 逐暗者
+    //逻辑开关
+    public bool IsHassha = false;           // 是否已发射
+    public bool IsOwari = false;            // 是否已结束
 	// Use this for initialization
     void Awake()
     {
         SpeedMagnitude = 200;
-        Position = new Vector3(0, 0, 0);
+        Position = new Vector3(0, 0, -5);
+        DarkRepulser = GameObject.Find("NiHonMe").GetComponent<NiHonMeKen>();
     }
 	void Start () {
         refMain = GameObject.Find("scriptMain").GetComponent<Main>();
@@ -57,7 +60,9 @@ public class Player : MonoBehaviour
     {
         Vector3 showPos = Position;
         showPos.y += ZeroPositonY;//地面高度偏移
-        transform.position = showPos/100;
+        showPos.x /= 100;
+        showPos.y /= 100;
+        transform.position = showPos;
     }
     //计算速度，各种因素照成的加速和减速
     void CalcSpeed()
@@ -124,5 +129,10 @@ public class Player : MonoBehaviour
         // 减小y值时，重力势能转化为动能
 //         SpeedMagnitude -= SpeedY;
 //         SpeedY -= SpeedY;
+    }
+    public void Attack()
+    {
+        DarkRepulser.gameObject.SetActive(true);
+        DarkRepulser.startTime = Time.time;
     }
 }

@@ -43,7 +43,7 @@ public class BackgroundImageControl : MonoBehaviour {
         // 新算法，根据player位置计算背景图位置
         // 角色在屏幕左起1/4处
         float width = GetComponent<SpriteRenderer>().sprite.rect.width;
-        float rightpos = transform.position.x + width / 100;
+        //float rightpos = transform.position.x + width / 100;
         Vector3 rightPoint3 = transform.position + new Vector3(width/100,0,0);
         Vector3 screenPos = Camera.main.WorldToScreenPoint(rightPoint3);
         float leftBorderX = refPlayer.transform.position.x - Main.ScreenWidth/4;

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 //一切的开始，斯曼，本弱渣还是喜欢Main
+public delegate void NoArguDelegate();
 public class Main : MonoBehaviour
 {
     public static float ScreenHeight = 7.68f;   //  屏幕高度
@@ -8,7 +9,7 @@ public class Main : MonoBehaviour
     public static int CloudMaxPerspective = 300;//  云的最大距离
     public static int BuilMaxPerspective = 500; //  房子的最大距离
     public static float tanTheta = 5.12f;       //  假设100为视距，屏幕最右侧到视角中心的正弦值
-
+    public static float GroundHeight = 1.20f;
     public Player player;                  // 主角
     private bool IsLaunched = false;       // 是否出发
     public float PerspectiveDis = 100;     // 观察距离
@@ -17,10 +18,17 @@ public class Main : MonoBehaviour
     public BackgroundImageControl[] preBackground;  // 背景预置
     public ReferenceObject[] preBuilding;   // 房屋预置
     public ReferenceObject[] preCloud;      // 云预置
-	// Use this for initialization
+    //独立的刷怪控制
+    public Enemy[] arrEnemys;
+    private RepopulationCtrl mRepopNemeyCtrl;
+    //各种触发
+    //public NoArguDelegate KillEnemyDele;
+    // Use this for initialization
     void Awake()
     {
         ReferenceObjsBGImage = new ArrayList();
+        mRepopNemeyCtrl   = new RepopulationCtrl();
+        Screen.SetResolution((int)(ScreenWidth * 100), (int)(ScreenHeight * 100), false);
     }
 	void Start () {
         tanTheta = ScreenWidth / 2;
@@ -58,6 +66,8 @@ public class Main : MonoBehaviour
             refercenobj.startPos = refercenobj.transform.position;
             ReferenceObjsBGImage.Add(refercenobj);
         }
+        // 初始化刷怪方法
+        mRepopNemeyCtrl.Init(0.5f, arrEnemys.Length, PopEnemy);
 	}
 	
 	// Update is called once per frame
@@ -68,14 +78,20 @@ public class Main : MonoBehaviour
         RefreshBuilding();
         // 键盘事件
         MyKeyDown();
+        // 刷新敌人
+        mRepopNemeyCtrl.Repopulation();
 	}
     void MyKeyDown()
     {
         if (Input.GetKey(KeyCode.LeftArrow))
         {
         }
-        if (Input.GetKey(KeyCode.RightArrow))
+        else if (Input.GetKey(KeyCode.RightArrow))
         {
+        }
+        else if (Input.GetKeyDown(KeyCode.Space))
+        {
+            player.Attack();
         }
     }
     void FixedUpdate()
@@ -91,9 +107,9 @@ public class Main : MonoBehaviour
             return;                
         }
         Vector3 pos = player.transform.position;
-        if (pos.y<=0.6f)
+        if (pos.y <= GroundHeight)
         {
-            pos.y = 0.6f;
+            pos.y = GroundHeight;
             player.transform.position = pos;
             //if (IsLaunched)
             {
@@ -110,7 +126,7 @@ public class Main : MonoBehaviour
         //if (!IsLaunched)
         //{
         //    //Player.velocity = (new Vector2(Mathf.Cos(TravelSpeedRot) * TravelSpeed, Mathf.Sin(TravelSpeedRot) * TravelSpeed));
-        //    player.transform.position += new Vector3(0, 0.6f, 0);
+        //    player.transform.position += new Vector3(0, GroundHeight, 0);
         //    IsLaunched = true;
         //}
     }
@@ -163,10 +179,10 @@ public class Main : MonoBehaviour
             int x = Random.Range(0, (int)(ScreenWidth * 100)*2) + (int)(100 * Camera.main.transform.position.x + (z * tanTheta));
             SetCloud(x+(int)offX, Random.Range(100, 4000), z);
             
-            Vector3 off = new Vector3(x,0,z) - Camera.main.transform.position*100;
-            float tanThetaX = off.x / z;
-            float tanThetaY = off.y / z;
-            Vector3 viewPos = Camera.main.transform.position + new Vector3(100 * tanThetaX, 100 * tanThetaY, 0)/100;
+            //Vector3 off = new Vector3(x,0,z) - Camera.main.transform.position*100;
+            //float tanThetaX = off.x / z;
+            //float tanThetaY = off.y / z;
+            //Vector3 viewPos = Camera.main.transform.position + new Vector3(100 * tanThetaX, 100 * tanThetaY, 0)/100;
         }
     }
     // 检查景物位置
@@ -177,5 +193,22 @@ public class Main : MonoBehaviour
             BackgroundImageControl _bgi = ReferenceObjsBGImage[i] as BackgroundImageControl;
             _bgi.ElderPostionFucntion();
         }
+    }
+    // 生成障碍物并向玩家飞来
+    void PopEnemy(int index)
+    {
+        if (!player.IsHassha || player.IsOwari)
+            return;
+        Enemy enemy = (Enemy)Instantiate(arrEnemys[index]);
+        enemy.gameObject.transform.parent = Camera.main.transform;  // 飞行障碍相对于镜头移动
+        // 在镜头外某一位置生成，超玩家位置飞去
+        enemy.transform.localPosition = new Vector3(ScreenWidth, Random.Range(-ScreenHeight / 2, ScreenHeight / 2), 5);
+        float speedX = Random.Range(-20.0f,-5.0f);//100.0f;
+        float timeReachPlayer = Mathf.Abs(ScreenWidth*1.5f / speedX);
+        float playerY = player.transform.position.y - Camera.main.transform.position.y;
+        float speedY = (playerY - enemy.transform.localPosition.y) / timeReachPlayer;
+        
+        enemy.GetComponent<Rigidbody2D>().velocity = new Vector2(speedX, speedY);
+        enemy.GetComponent<Rigidbody2D>().angularVelocity = Random.Range(180, 1080);
     }
 }
